@@ -46,8 +46,13 @@ async def on_ready():
     print(f"We have logged in as {bot.user}")
     
     await bot.load_extension("cogs.id")
+    print("ID cog loaded")
+
+    await bot.load_extension("cogs.baseloading")
+    print("Baseloading cog loaded")
+
     await tree.sync(guild=discord.Object(id=server_id))  # Sync the commands after loading the cog
-    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name =f"YouTube poops"))
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name =f"over Securitas employees"))
     print(discord.__version__)
 
 @bot.event

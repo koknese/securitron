@@ -19,6 +19,9 @@ version = os.getenv('VERSION')
 confirmationChannel = int(os.getenv('CONFIRMATION_CHANNEL'))
 ID_API_ENDPOINT = "https://users.roblox.com/v1/usernames/users"
 
+role1 = 1339345543486509104
+role2 = 1358963787407032321
+
 def getUserId(username):
     requestPayload = {
             "usernames": [
@@ -81,6 +84,8 @@ class Identificationui(ui.Modal, title='You are signing up for a Securitas ID ©
                    conn.close()
 
                    await interaction.response.send_message(embed=embed)
+                   applicant = interaction.client.get_channel(self.discordid)
+                   await applicant.send("Your ID application in Securitas was accepted!")
                except Exception as e:
                    embed = discord.Embed(title="[Errno 4] Unknown error!", description=str(e), colour=0xa51d2d)
                    await interaction.response.send_message(embed=embed)
@@ -161,6 +166,7 @@ class Identification(GroupCog, group_name="id", group_description="Securitas dig
             description="Find an ID using a Roblox username"
     )
     @app_commands.guilds(discord.Object(id=server_id))
+    @app_commands.checks.has_any_role(role1, role2)
     async def find_by_roblox(self, interaction:discord.Interaction, roblox_username:str):
         try:
             conn = sqlite3.connect('data.sqlite')
@@ -210,6 +216,7 @@ class Identification(GroupCog, group_name="id", group_description="Securitas dig
             name="delete",
             description="Delete an ID using a Roblox username"
     )
+    @app_commands.checks.has_permissions(administrator=True)
     @app_commands.guilds(discord.Object(id=server_id))
     async def delete(self, interaction:discord.Interaction, roblox_username:str):
         try:
@@ -241,6 +248,7 @@ class Identification(GroupCog, group_name="id", group_description="Securitas dig
             name="view_from_discord_account",
             description="Find an ID using a Discord username"
     )
+    @app_commands.checks.has_any_role(role1, role2)
     @app_commands.guilds(discord.Object(id=server_id))
     async def find_by_roblox(self, interaction:discord.Interaction, user: discord.Member):
         try:
