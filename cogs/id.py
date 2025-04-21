@@ -218,7 +218,7 @@ class Identification(GroupCog, group_name="id", group_description="Securitas dig
     )
     @app_commands.guilds(discord.Object(id=server_id))
     async def delete(self, interaction:discord.Interaction, roblox_username:str):
-        if not interaction.user.guild_permissions.manage_messages or:
+        if not interaction.user.guild_permissions.manage_messages:
             await interaction.response.send_message("You are lacking permissions!", ephemeral=True)
             return
 
