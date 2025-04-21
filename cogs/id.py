@@ -84,7 +84,8 @@ class Identificationui(ui.Modal, title='You are signing up for a Securitas ID ©
                    conn.close()
 
                    await interaction.response.send_message(embed=embed)
-                   applicant = interaction.client.get_channel(self.discordid)
+                   print(self.discordid)
+                   applicant = interaction.client.get_user(self.discordid)
                    await applicant.send("Your ID application in Securitas was accepted!")
                except Exception as e:
                    embed = discord.Embed(title="[Errno 4] Unknown error!", description=str(e), colour=0xa51d2d)
