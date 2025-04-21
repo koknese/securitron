@@ -300,5 +300,80 @@ class Identification(GroupCog, group_name="id", group_description="Securitas dig
                 embed.set_footer(text=f"Securitas Managment v.{version}", icon_url="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fb.thumbs.redditmedia.com%2FOkTdkj9krJasoRW41aR-fEaPx9ptf0I1jq9k80b154A.png&f=1&nofb=1&ipt=61f1bf9a0a87897a8374c0762298f934685e0f2d70ff64ac51190c0eb92b5d6e")
                 await interaction.response.send_message(embed=embed)
 
+    @command(
+            name="view_own",
+            description="View your own id"
+    )
+    @app_commands.guilds(discord.Object(id=server_id))
+    async def view_own(self, interaction:discord.Interaction):
+        try:
+            conn = sqlite3.connect('data.sqlite')
+            c = conn.cursor()
+            c.execute("SELECT * FROM ids WHERE discord_id = ?", (interaction.user.id,))
+            row = c.fetchone()
+            if row:
+                roblox_username_db = row[0]
+                discord_id_db = row[1]
+                securitas_id_db = row[2]
+                userRawHeadshot = f"https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds={getUserId(roblox_username_db)}&format=png&size=352x352"
+                response = requests.get(userRawHeadshot)
+                if response.status_code == 200:
+                    userParsedHeadshot = response.json()
+                    userFinalHeadshot = userParsedHeadshot['data'][0]['imageUrl']
+                else:
+                    embed = discord.Embed(title="[Errno 4] Unknown error!", description=response.text, colour=0xa51d2d)
+                    embed.set_image(url=f'https://http.cat/{response.status_code}.jpg')
+                    embed.set_footer(text=f"Securitas Managment {version}")
+                    await interaction.response.send_message(embed=embed)
+                embed = discord.Embed(colour=0xf66151)
+                embed.set_author(name="SECURITAS DIGITAL ID")
+
+                embed.add_field(name="Roblox Username",
+                                value=roblox_username_db,
+                                inline=False)
+                embed.add_field(name="Discord ID",
+                                value=discord_id_db,
+                                inline=False)
+                embed.add_field(name="Securitas ID",
+                                value=securitas_id_db,
+                                inline=False)
+                
+                embed.set_footer(text=f"Securitas Managment v.{version}", icon_url="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fb.thumbs.redditmedia.com%2FOkTdkj9krJasoRW41aR-fEaPx9ptf0I1jq9k80b154A.png&f=1&nofb=1&ipt=61f1bf9a0a87897a8374c0762298f934685e0f2d70ff64ac51190c0eb92b5d6e")
+                embed.set_thumbnail(url=userFinalHeadshot)
+                await interaction.response.send_message(":mag::white_check_mark: ID found!", embed=embed, ephemeral=True)
+            else:
+                embed = discord.Embed(title="ID not found!", colour=0xc01c28)
+                embed.set_footer(text=f"Securitas Managment v.{version}", icon_url="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fb.thumbs.redditmedia.com%2FOkTdkj9krJasoRW41aR-fEaPx9ptf0I1jq9k80b154A.png&f=1&nofb=1&ipt=61f1bf9a0a87897a8374c0762298f934685e0f2d70ff64ac51190c0eb92b5d6e")
+                await interaction.response.send_message(embed=embed)
+        except sqlite3.OperationalError:
+                embed = discord.Embed(title="SQL: Table not found!", colour=0xc01c28, description="Perhaps a database hasn't been generated yet? Creating an ID creates one!")
+                embed.set_footer(text=f"Securitas Managment v.{version}", icon_url="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fb.thumbs.redditmedia.com%2FOkTdkj9krJasoRW41aR-fEaPx9ptf0I1jq9k80b154A.png&f=1&nofb=1&ipt=61f1bf9a0a87897a8374c0762298f934685e0f2d70ff64ac51190c0eb92b5d6e")
+                await interaction.response.send_message(embed=embed)
+
+    @command(
+            name="help",
+            description="Get help with ID commands"
+    )
+    @app_commands.guilds(discord.Object(id=server_id))
+    async def delete(self, interaction:discord.Interaction):
+        embed = discord.Embed(colour=0xf66151, title="Help")
+        embed.set_author(name="SECURITAS DIGITAL ID")
+        embed.add_field(name="/id create",
+                        value="Start the process for creating your own ID. Once filled out, wait for approval.",
+                        inline=False)
+        embed.add_field(name="/id view_own",
+                        value="View your own ID.",
+                        inline=False)
+        embed.add_field(name="/id view_from_roblox_username",
+                        value="(Usage of this command is restricted) View someone's id from their Roblox username.",
+                        inline=False)
+        embed.add_field(name="/id view_from_discord_account",
+                        value="(Usage of this command is restricted) View someone's id from their Discord account.",
+                        inline=False)
+        embed.add_field(name="/id delete",
+                        value="(Usage of this command is restricted) Delete someone's id.",
+                        inline=False)
+        await interaction.response.send_message(embed=embed)
+
 async def setup(bot: commands.Bot):
     await bot.add_cog(Identification(bot), guild=discord.Object(id=server_id))
