@@ -76,7 +76,7 @@ class Identificationui(ui.Modal, title='You are signing up for a Securitas ID ©
                                     VALUES (?, ?, ?);
                                  """, (self.roblox_username, self.discordid, self.securitas_id))
         
-                   embed = discord.Embed(title=f"User registed to database by {interaction.user}!", colour=0x2ec27e)
+                   embed = discord.Embed(title=f"User registered to database by {interaction.user}!", colour=0x2ec27e)
                    embed.set_footer(text=f"Securitas Managment v.{version}")
                        
                    conn.commit()
