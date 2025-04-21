@@ -355,7 +355,7 @@ class Identification(GroupCog, group_name="id", group_description="Securitas dig
             description="Get help with ID commands"
     )
     @app_commands.guilds(discord.Object(id=server_id))
-    async def delete(self, interaction:discord.Interaction):
+    async def help(self, interaction:discord.Interaction):
         embed = discord.Embed(colour=0xf66151, title="Help")
         embed.set_author(name="SECURITAS DIGITAL ID")
         embed.add_field(name="/id create",
