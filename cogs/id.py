@@ -255,7 +255,7 @@ class Identification(GroupCog, group_name="id", group_description="Securitas dig
     )
     @app_commands.checks.has_any_role(role1, role2)
     @app_commands.guilds(discord.Object(id=server_id))
-    async def find_by_roblox(self, interaction:discord.Interaction, user: discord.Member):
+    async def find_by_discord(self, interaction:discord.Interaction, user: discord.Member):
         try:
             conn = sqlite3.connect('data.sqlite')
             c = conn.cursor()
