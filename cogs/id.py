@@ -76,7 +76,7 @@ class Identificationui(ui.Modal, title='You are signing up for a Securitas ID ©
                                     VALUES (?, ?, ?);
                                  """, (self.roblox_username, self.discordid, self.securitas_id))
         
-                   embed = discord.Embed(title=f"User registed to database!", colour=0x2ec27e)
+                   embed = discord.Embed(title=f"User registed to database by {interaction.user}!", colour=0x2ec27e)
                    embed.set_footer(text=f"Securitas Managment v.{version}")
                        
                    conn.commit()
@@ -216,9 +216,12 @@ class Identification(GroupCog, group_name="id", group_description="Securitas dig
             name="delete",
             description="Delete an ID using a Roblox username"
     )
-    @app_commands.checks.has_permissions(administrator=True)
     @app_commands.guilds(discord.Object(id=server_id))
     async def delete(self, interaction:discord.Interaction, roblox_username:str):
+        if not interaction.user.guild_permissions.manage_messages or:
+            await interaction.response.send_message("You are lacking permissions!", ephemeral=True)
+            return
+
         try:
             conn = sqlite3.connect('data.sqlite')
             c = conn.cursor()
@@ -243,6 +246,8 @@ class Identification(GroupCog, group_name="id", group_description="Securitas dig
                 embed = discord.Embed(title="SQL: Table not found!", colour=0xc01c28, description="Perhaps a database hasn't been generated yet? Creating an ID creates one!")
                 embed.set_footer(text=f"Securitas Managment v.{version}", icon_url="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fb.thumbs.redditmedia.com%2FOkTdkj9krJasoRW41aR-fEaPx9ptf0I1jq9k80b154A.png&f=1&nofb=1&ipt=61f1bf9a0a87897a8374c0762298f934685e0f2d70ff64ac51190c0eb92b5d6e")
                 await interaction.response.send_message(embed=embed)
+        except discord.errors.MissingPermissions:
+            await interaction.response.send_message("You are lacking permissions!", ephemeral=True)
 
     @command(
             name="view_from_discord_account",
