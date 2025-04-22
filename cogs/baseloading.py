@@ -18,8 +18,7 @@ server_id = int(os.getenv('SERVER_ID'))
 version = os.getenv('VERSION')
 baseloadPollChannel = int(os.getenv('BASELOAD_POLL_CHANNEL'))
 baseloadChannel = int(os.getenv('BASELOAD_CHANNEL'))
-unix_timestamp = int(time.time())
-ID_API_ENDPOINT = "https://users.roblox.com/v1/usernames/users"
+s.roblox.com/v1/usernames/users"
 
 role1 = 1339345543486509104
 role2 = 1358963787407032321
@@ -55,7 +54,7 @@ class Baseloading(GroupCog, group_name="baseload", group_description="Securitas 
     @app_commands.describe(time="Time in which the poll ends (in minutes)", reactions_required="How many reaction to the message are required for the poll to succeed")
     @app_commands.checks.has_permissions(manage_guild=True)
     async def poll(self, interaction: discord.Interaction, details: str, base: str, time: int, reactions_required: str):
-
+        unix_timestamp = int(time.time())
         timeInSec = time * 60
         final_stamp = timeInSec + unix_timestamp
         print(timeInSec)
