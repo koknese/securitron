@@ -51,11 +51,11 @@ class Baseloading(GroupCog, group_name="baseload", group_description="Securitas 
         description="Start a baseload poll"
     )
     @app_commands.guilds(discord.Object(id=server_id))
-    @app_commands.describe(time="Time in which the poll ends (in minutes)", reactions_required="How many reaction to the message are required for the poll to succeed")
+    @app_commands.describe(poll_end_time="Time in which the poll ends (in minutes)", reactions_required="How many reaction to the message are required for the poll to succeed")
     @app_commands.checks.has_permissions(manage_guild=True)
-    async def poll(self, interaction: discord.Interaction, details: str, base: str, time: int, reactions_required: str):
+    async def poll(self, interaction: discord.Interaction, details: str, base: str, poll_end_time: int, reactions_required: str):
         unix_timestamp = time.time()
-        timeInSec = time * 60
+        timeInSec = poll_end_time * 60
         final_stamp = timeInSec + unix_timestamp
         print(timeInSec)
         print(unix_timestamp)
