@@ -18,7 +18,7 @@ server_id = int(os.getenv('SERVER_ID'))
 version = os.getenv('VERSION')
 baseloadPollChannel = int(os.getenv('BASELOAD_POLL_CHANNEL'))
 baseloadChannel = int(os.getenv('BASELOAD_CHANNEL'))
-s.roblox.com/v1/usernames/users"
+ID_API_ENDPOINT = "https://users.roblox.com/v1/usernames/users"
 
 role1 = 1339345543486509104
 role2 = 1358963787407032321
