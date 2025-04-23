@@ -125,7 +125,7 @@ class Identificationui(ui.Modal, title='You are signing up for a Securitas ID ©
                        value=self.username.value,
                        inline=False)
        embed.add_field(name="Discord ID",
-                       value=interaction.user.id,
+                       value=f"{interaction.user.id} | <@{interaction.user.id}>",
                        inline=False)
        embed.add_field(name="Securitas ID",
                        value=securitasID,
@@ -195,7 +195,7 @@ class Identification(GroupCog, group_name="id", group_description="Securitas dig
                                 value=roblox_username_db,
                                 inline=False)
                 embed.add_field(name="Discord ID",
-                                value=discord_id_db,
+                                value=f"{discord_id_db} | <@{discord_id_db}>",
                                 inline=False)
                 embed.add_field(name="Securitas ID",
                                 value=securitas_id_db,
@@ -283,7 +283,7 @@ class Identification(GroupCog, group_name="id", group_description="Securitas dig
                                 value=roblox_username_db,
                                 inline=False)
                 embed.add_field(name="Discord ID",
-                                value=discord_id_db,
+                                value=f"{discord_id_db} | <@{discord_id_db}>",
                                 inline=False)
                 embed.add_field(name="Securitas ID",
                                 value=securitas_id_db,
@@ -333,7 +333,7 @@ class Identification(GroupCog, group_name="id", group_description="Securitas dig
                                 value=roblox_username_db,
                                 inline=False)
                 embed.add_field(name="Discord ID",
-                                value=discord_id_db,
+                                value=f"{discord_id_db} | <@{discord_id_db}>",
                                 inline=False)
                 embed.add_field(name="Securitas ID",
                                 value=securitas_id_db,
