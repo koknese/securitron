@@ -237,6 +237,7 @@ class Identification(GroupCog, group_name="id", group_description="Securitas dig
                 roblox_username_db = row[0]
                 discord_id_db = row[1]
                 securitas_id_db = row[2]
+                rank_db = row[3]
                 userRawHeadshot = f"https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds={getUserId(roblox_username_db)}&format=png&size=352x352"
                 response = requests.get(userRawHeadshot)
                 if response.status_code == 200:
@@ -259,10 +260,13 @@ class Identification(GroupCog, group_name="id", group_description="Securitas dig
                 embed.add_field(name="Securitas ID",
                                 value=securitas_id_db,
                                 inline=False)
+                embed.add_field(name="Rank",
+                                value=determineRank(rank_db),
+                                inline=False)
                 
                 embed.set_footer(text=f"Securitas Managment v.{version}", icon_url="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fb.thumbs.redditmedia.com%2FOkTdkj9krJasoRW41aR-fEaPx9ptf0I1jq9k80b154A.png&f=1&nofb=1&ipt=61f1bf9a0a87897a8374c0762298f934685e0f2d70ff64ac51190c0eb92b5d6e")
                 embed.set_thumbnail(url=userFinalHeadshot)
-                return embed
+                await interaction.response.send_message(":mag::white_check_mark: ID found!", embed=embed, ephemeral=True)
             else:
                 embed = discord.Embed(title="ID not found!", colour=0xc01c28)
                 embed.set_footer(text=f"Securitas Managment v.{version}", icon_url="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fb.thumbs.redditmedia.com%2FOkTdkj9krJasoRW41aR-fEaPx9ptf0I1jq9k80b154A.png&f=1&nofb=1&ipt=61f1bf9a0a87897a8374c0762298f934685e0f2d70ff64ac51190c0eb92b5d6e")
@@ -319,7 +323,7 @@ class Identification(GroupCog, group_name="id", group_description="Securitas dig
     @app_commands.checks.has_any_role(role1, role2)
     @app_commands.guilds(discord.Object(id=server_id))
     async def find_by_discord(self, interaction:discord.Interaction, user: discord.Member):
-        await interaction.response.send_message(embed=await getIDByDiscord(user.id), ephemeral=True)
+        await interaction.response.send_message(":mag::white_check_mark: ID found!", embed=await getIDByDiscord(user.id), ephemeral=True)
 
     @command(
             name="view_own",
@@ -327,7 +331,7 @@ class Identification(GroupCog, group_name="id", group_description="Securitas dig
     )
     @app_commands.guilds(discord.Object(id=server_id))
     async def view_own(self, interaction:discord.Interaction):
-        await interaction.response.send_message(embed=await getIDByDiscord(interaction.user.id), ephemeral=True)
+        await interaction.response.send_message(":mag::white_check_mark: ID found!", embed=await getIDByDiscord(interaction.user.id), ephemeral=True)
 
     @command(
             name="help",
