@@ -356,6 +356,9 @@ class Identification(GroupCog, group_name="id", group_description="Securitas dig
         embed.add_field(name="/id delete",
                         value="(Usage of this command is restricted) Delete someone's id.",
                         inline=False)
+        embed.add_field(name="/id set_rank",
+                        value="(Usage of this command is restricted) Set the rank for a user.",
+                        inline=False)
         await interaction.response.send_message(embed=embed)
 
     @command(
