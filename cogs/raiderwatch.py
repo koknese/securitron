@@ -115,6 +115,7 @@ class Raiderwatch(GroupCog, group_name="raiderwatch", group_description="Securit
     @app_commands.guilds(discord.Object(id=server_id))
     async def raider_check(self, interaction:discord.Interaction, roblox_username:str):
         try:
+            await interaction.response.defer(thinking=True)
             conn = sqlite3.connect('data.sqlite')
             c = conn.cursor()
             c.execute("SELECT * FROM raiders WHERE roblox_username = ?", (roblox_username.lower(),))
@@ -137,7 +138,7 @@ class Raiderwatch(GroupCog, group_name="raiderwatch", group_description="Securit
                     embed = discord.Embed(title="[Errno 4] Unknown error!", description=response.text, colour=0xa51d2d)
                     embed.set_image(url=f'https://http.cat/{response.status_code}.jpg')
                     embed.set_footer(text=f"Securitas Managment {version}")
-                    await interaction.response.send_message(embed=embed)
+                    await interaction.followup.send(embed=embed)
                 embed = discord.Embed(colour=0xf66151)
                 embed.set_author(name="SECURITAS RAIDERWATCH")
 
@@ -163,15 +164,15 @@ class Raiderwatch(GroupCog, group_name="raiderwatch", group_description="Securit
                 
                 embed.set_footer(text=f"Securitas Managment v.{version}", icon_url="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fb.thumbs.redditmedia.com%2FOkTdkj9krJasoRW41aR-fEaPx9ptf0I1jq9k80b154A.png&f=1&nofb=1&ipt=61f1bf9a0a87897a8374c0762298f934685e0f2d70ff64ac51190c0eb92b5d6e")
                 embed.set_thumbnail(url=userFinalHeadshot)
-                await interaction.response.send_message(":mag::white_check_mark: Raider found!", embed=embed)
+                await interaction.followup.send(":mag::white_check_mark: Raider found!", embed=embed)
             else:
                 embed = discord.Embed(title="Raider not found!", colour=0xc01c28)
                 embed.set_footer(text=f"Securitas Managment v.{version}", icon_url="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fb.thumbs.redditmedia.com%2FOkTdkj9krJasoRW41aR-fEaPx9ptf0I1jq9k80b154A.png&f=1&nofb=1&ipt=61f1bf9a0a87897a8374c0762298f934685e0f2d70ff64ac51190c0eb92b5d6e")
-                await interaction.response.send_message(embed=embed)
+                await interaction.followup.send(embed=embed)
         except sqlite3.OperationalError:
                 embed = discord.Embed(title="SQL: Table not found!", colour=0xc01c28, description="Perhaps a database hasn't been generated yet? Creating an ID creates one!")
                 embed.set_footer(text=f"Securitas Managment v.{version}", icon_url="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fb.thumbs.redditmedia.com%2FOkTdkj9krJasoRW41aR-fEaPx9ptf0I1jq9k80b154A.png&f=1&nofb=1&ipt=61f1bf9a0a87897a8374c0762298f934685e0f2d70ff64ac51190c0eb92b5d6e")
-                await interaction.response.send_message(embed=embed)
+                await interaction.followup.send(embed=embed)
         finally:
             c.close()
             conn.close()
