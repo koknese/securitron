@@ -210,5 +210,24 @@ class Raiderwatch(GroupCog, group_name="raiderwatch", group_description="Securit
             embed.set_footer(text=f"Securitas Managment v.{version}", icon_url="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fb.thumbs.redditmedia.com%2FOkTdkj9krJasoRW41aR-fEaPx9ptf0I1jq9k80b154A.png&f=1&nofb=1&ipt=61f1bf9a0a87897a8374c0762298f934685e0f2d70ff64ac51190c0eb92b5d6e")
             await interaction.followup.send(embed=embed)
 
+    @command(
+            name="help",
+            description="Get help with ID commands"
+    )
+    @app_commands.guilds(discord.Object(id=server_id))
+    async def help_raiderwatch(self, interaction:discord.Interaction):
+        embed = discord.Embed(colour=0xf66151, title="Help")
+        embed.set_author(name="SECURITAS RAIDERWATCH")
+        embed.add_field(name="/raiderwatch register_raider",
+                        value="(Usage of this command is restricted) Register a raid to the database",
+                        inline=False)
+        embed.add_field(name="/raiderwatch check",
+                        value="Get info on a registered raider.",
+                        inline=False)
+        embed.add_field(name="/raiderwatch delete",
+                        value="(Usage of this command is restricted) Delete a raider from the database.",
+                        inline=False)
+        await interaction.response.send_message(embed=embed)
+
 async def setup(bot: commands.Bot):
     await bot.add_cog(Raiderwatch(bot), guild=discord.Object(id=server_id))
