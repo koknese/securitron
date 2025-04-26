@@ -81,7 +81,7 @@ class Raiderwatch(GroupCog, group_name="raiderwatch", group_description="Securit
       
         c.execute("""CREATE TABLE IF NOT EXISTS raiders(
                                   roblox_username string NOT NULL,
-                                  notes TEXT NOT NULL,
+                                  notes TEXT,
                                   first_registered TEXT NOT NULL,
                                   last_seen TEXT
                                   )""")
