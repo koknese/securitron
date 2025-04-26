@@ -246,7 +246,7 @@ class Raiderwatch(GroupCog, group_name="raiderwatch", group_description="Securit
 
     @command(
             name="help",
-            description="Get help with ID commands"
+            description="Get help with Raiderwatch commands"
     )
     @app_commands.guilds(discord.Object(id=server_id))
     async def help_raiderwatch(self, interaction:discord.Interaction):
