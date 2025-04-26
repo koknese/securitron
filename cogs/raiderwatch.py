@@ -187,7 +187,7 @@ class Raiderwatch(GroupCog, group_name="raiderwatch", group_description="Securit
             return
 
         try:
-            await interaction.response.defer()
+            await interaction.response.defer(thinking=True)
             with sqlite3.connect('data.sqlite') as conn:
                 c = conn.cursor()
                 c.execute("SELECT * FROM raiders WHERE roblox_username = ?", (roblox_username.lower(),))
@@ -211,6 +211,40 @@ class Raiderwatch(GroupCog, group_name="raiderwatch", group_description="Securit
             await interaction.followup.send(embed=embed)
 
     @command(
+            name="update_last_seen",
+            description="Update the last seen date for an entry in Raiderwatch"
+    )
+    async def update_last_seen(self, interaction:discord.Interaction, roblox_username:str):
+        try:
+            await interaction.response.defer(thinking=True)
+            with sqlite3.connect('data.sqlite') as conn:
+                c = conn.cursor()
+                utc_time = f"{datetime.now(UTC)} UTC"
+                c.execute("""
+                UPDATE raiders
+                SET last_seen = ?
+                WHERE roblox_username = ?;
+                """, (utc_time, roblox_username))
+
+                conn.commit()
+                
+                embed = discord.Embed(title="Entry updated!",
+                    description=f"Raiderwatch entry for {roblox_username} was updated succesfully!",
+                    colour=0x57e389,
+                    timestamp=datetime.now())
+                embed.set_footer(text=f"Securitas Managment v.{version}", icon_url="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fb.thumbs.redditmedia.com%2FOkTdkj9krJasoRW41aR-fEaPx9ptf0I1jq9k80b154A.png&f=1&nofb=1&ipt=61f1bf9a0a87897a8374c0762298f934685e0f2d70ff64ac51190c0eb92b5d6e")
+                await interaction.followup.send(embed=embed)
+        except Exception as e:
+            embed = discord.Embed(title="Unknown error occured!", colour=0xc01c28, description=f"```{e}```")
+            embed.set_footer(text=f"Securitas Managment v.{version}", icon_url="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fb.thumbs.redditmedia.com%2FOkTdkj9krJasoRW41aR-fEaPx9ptf0I1jq9k80b154A.png&f=1&nofb=1&ipt=61f1bf9a0a87897a8374c0762298f934685e0f2d70ff64ac51190c0eb92b5d6e")
+            await interaction.followup.send(embed=embed)
+        finally:
+            c.close()
+            conn.close()
+               
+
+
+    @command(
             name="help",
             description="Get help with ID commands"
     )
@@ -223,6 +257,9 @@ class Raiderwatch(GroupCog, group_name="raiderwatch", group_description="Securit
                         inline=False)
         embed.add_field(name="/raiderwatch check",
                         value="Get info on a registered raider.",
+                        inline=False)
+        embed.add_field(name="/raiderwatch update_last_seen",
+                        value="Update the last seen date for a raider.",
                         inline=False)
         embed.add_field(name="/raiderwatch delete",
                         value="(Usage of this command is restricted) Delete a raider from the database.",
