@@ -72,6 +72,10 @@ class Raiderwatch(GroupCog, group_name="raiderwatch", group_description="Securit
     )
     @app_commands.guilds(discord.Object(id=server_id))
     async def register(self, interaction:discord.Interaction, roblox_username: str, notes: str = None):
+        if not interaction.user.guild_permissions.manage_messages:
+            await interaction.response.send_message("You are lacking permissions!", ephemeral=True)
+            return
+
         conn = sqlite3.connect('data.sqlite')
         c = conn.cursor()
       
