@@ -67,6 +67,8 @@ async def getIDByDiscord(discordID):
                 
                 embed.set_footer(text=f"Securitas Managment v.{version}", icon_url="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fb.thumbs.redditmedia.com%2FOkTdkj9krJasoRW41aR-fEaPx9ptf0I1jq9k80b154A.png&f=1&nofb=1&ipt=61f1bf9a0a87897a8374c0762298f934685e0f2d70ff64ac51190c0eb92b5d6e")
                 embed.set_thumbnail(url=userFinalHeadshot)
+                c.close()
+                conn.close()
                 return embed
             else:
                 embed = discord.Embed(title="ID not found!", colour=0xc01c28)
@@ -76,9 +78,6 @@ async def getIDByDiscord(discordID):
                 embed = discord.Embed(title="SQL: Table not found!", colour=0xc01c28, description="Perhaps a database hasn't been generated yet? Creating an ID creates one!")
                 embed.set_footer(text=f"Securitas Managment v.{version}", icon_url="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fb.thumbs.redditmedia.com%2FOkTdkj9krJasoRW41aR-fEaPx9ptf0I1jq9k80b154A.png&f=1&nofb=1&ipt=61f1bf9a0a87897a8374c0762298f934685e0f2d70ff64ac51190c0eb92b5d6e")
                 return embed
-        finally:
-            c.close()
-            conn.close()
 
 def getUserId(username):
     requestPayload = {
@@ -302,6 +301,8 @@ class Identification(GroupCog, group_name="id", group_description="Securitas dig
                           timestamp=datetime.now())
                 embed.set_footer(text=f"Securitas Managment v.{version}", icon_url="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fb.thumbs.redditmedia.com%2FOkTdkj9krJasoRW41aR-fEaPx9ptf0I1jq9k80b154A.png&f=1&nofb=1&ipt=61f1bf9a0a87897a8374c0762298f934685e0f2d70ff64ac51190c0eb92b5d6e")
                 await interaction.response.send_message(embed=embed)
+                c.close()
+                conn.close()
             else:
                 embed = discord.Embed(title="ID not found!", colour=0xc01c28)
                 embed.set_footer(text=f"Securitas Managment v.{version}", icon_url="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fb.thumbs.redditmedia.com%2FOkTdkj9krJasoRW41aR-fEaPx9ptf0I1jq9k80b154A.png&f=1&nofb=1&ipt=61f1bf9a0a87897a8374c0762298f934685e0f2d70ff64ac51190c0eb92b5d6e")
@@ -312,9 +313,6 @@ class Identification(GroupCog, group_name="id", group_description="Securitas dig
                 await interaction.response.send_message(embed=embed)
         except discord.errors.MissingPermissions:
             await interaction.response.send_message("You are lacking permissions!", ephemeral=True)
-        finally:
-            c.close()
-            conn.close()
 
     @command(
             name="view_from_discord_account",
@@ -384,15 +382,13 @@ class Identification(GroupCog, group_name="id", group_description="Securitas dig
             """, (parsedRank, target_user.id))
 
             conn.commit()
+            c.close()
+            conn.close()
             await interaction.response.send_message(f"Rank for {target_user} was set to {parsedRank}!")
         except Exception as e:
                 embed = discord.Embed(title="Unknown error occured!", colour=0xc01c28, description=f"```{e}```")
                 embed.set_footer(text=f"Securitas Managment v.{version}", icon_url="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fb.thumbs.redditmedia.com%2FOkTdkj9krJasoRW41aR-fEaPx9ptf0I1jq9k80b154A.png&f=1&nofb=1&ipt=61f1bf9a0a87897a8374c0762298f934685e0f2d70ff64ac51190c0eb92b5d6e")
                 await interaction.response.send_message(embed=embed)
-        finally:
-            c.close()
-            conn.close()
-
 
 
 async def setup(bot: commands.Bot):
