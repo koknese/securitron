@@ -28,11 +28,11 @@ def determineRank(rank_db):
     else:
         return "NOT SET"
 
-async def getIDByDiscord(discordID):
+async def getID(gettingMethod, discordID):
         try:
             conn = sqlite3.connect('data.sqlite')
             c = conn.cursor()
-            c.execute("SELECT * FROM ids WHERE discord_id = ?", (discordID,))
+            c.execute(f"SELECT * FROM ids WHERE {gettingMethod} = ?", (discordID,))
             row = c.fetchone()
             if row:
                 roblox_username_db = row[0]
@@ -227,53 +227,7 @@ class Identification(GroupCog, group_name="id", group_description="Securitas dig
     @app_commands.guilds(discord.Object(id=server_id))
     @app_commands.checks.has_any_role(role1, role2)
     async def find_by_roblox(self, interaction:discord.Interaction, roblox_username:str):
-        try:
-            conn = sqlite3.connect('data.sqlite')
-            c = conn.cursor()
-            c.execute("SELECT * FROM ids WHERE roblox_username = ?", (roblox_username.lower(),))
-            row = c.fetchone()
-            if row:
-                roblox_username_db = row[0]
-                discord_id_db = row[1]
-                securitas_id_db = row[2]
-                rank_db = row[3]
-                userRawHeadshot = f"https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds={getUserId(roblox_username_db)}&format=png&size=352x352"
-                response = requests.get(userRawHeadshot)
-                if response.status_code == 200:
-                    userParsedHeadshot = response.json()
-                    userFinalHeadshot = userParsedHeadshot['data'][0]['imageUrl']
-                else:
-                    embed = discord.Embed(title="[Errno 4] Unknown error!", description=response.text, colour=0xa51d2d)
-                    embed.set_image(url=f'https://http.cat/{response.status_code}.jpg')
-                    embed.set_footer(text=f"Securitas Managment {version}")
-                    await interaction.response.send_message(embed=embed)
-                embed = discord.Embed(colour=0xf66151)
-                embed.set_author(name="SECURITAS DIGITAL ID")
-
-                embed.add_field(name="Roblox Username",
-                                value=roblox_username_db,
-                                inline=False)
-                embed.add_field(name="Discord ID",
-                                value=f"{discord_id_db} | <@{discord_id_db}>",
-                                inline=False)
-                embed.add_field(name="Securitas ID",
-                                value=securitas_id_db,
-                                inline=False)
-                embed.add_field(name="Rank",
-                                value=determineRank(rank_db),
-                                inline=False)
-                
-                embed.set_footer(text=f"Securitas Managment v.{version}", icon_url="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fb.thumbs.redditmedia.com%2FOkTdkj9krJasoRW41aR-fEaPx9ptf0I1jq9k80b154A.png&f=1&nofb=1&ipt=61f1bf9a0a87897a8374c0762298f934685e0f2d70ff64ac51190c0eb92b5d6e")
-                embed.set_thumbnail(url=userFinalHeadshot)
-                await interaction.response.send_message(":mag::white_check_mark: ID found!", embed=embed, ephemeral=True)
-            else:
-                embed = discord.Embed(title="ID not found!", colour=0xc01c28)
-                embed.set_footer(text=f"Securitas Managment v.{version}", icon_url="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fb.thumbs.redditmedia.com%2FOkTdkj9krJasoRW41aR-fEaPx9ptf0I1jq9k80b154A.png&f=1&nofb=1&ipt=61f1bf9a0a87897a8374c0762298f934685e0f2d70ff64ac51190c0eb92b5d6e")
-                await interaction.response.send_message(embed=embed)
-        except sqlite3.OperationalError:
-                embed = discord.Embed(title="SQL: Table not found!", colour=0xc01c28, description="Perhaps a database hasn't been generated yet? Creating an ID creates one!")
-                embed.set_footer(text=f"Securitas Managment v.{version}", icon_url="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fb.thumbs.redditmedia.com%2FOkTdkj9krJasoRW41aR-fEaPx9ptf0I1jq9k80b154A.png&f=1&nofb=1&ipt=61f1bf9a0a87897a8374c0762298f934685e0f2d70ff64ac51190c0eb92b5d6e")
-                await interaction.response.send_message(embed=embed)
+        await interaction.response.send_message(":mag::white_check_mark: ID found!", embed=await getID("roblox_username", roblox_username), ephemeral=True)
 
     @command(
             name="delete",
@@ -321,7 +275,7 @@ class Identification(GroupCog, group_name="id", group_description="Securitas dig
     @app_commands.checks.has_any_role(role1, role2)
     @app_commands.guilds(discord.Object(id=server_id))
     async def find_by_discord(self, interaction:discord.Interaction, user: discord.Member):
-        await interaction.response.send_message(":mag::white_check_mark: ID found!", embed=await getIDByDiscord(user.id), ephemeral=True)
+        await interaction.response.send_message(":mag::white_check_mark: ID found!", embed=await getID("discord_id", user.id), ephemeral=True)
 
     @command(
             name="view_own",
@@ -329,7 +283,7 @@ class Identification(GroupCog, group_name="id", group_description="Securitas dig
     )
     @app_commands.guilds(discord.Object(id=server_id))
     async def view_own(self, interaction:discord.Interaction):
-        await interaction.response.send_message(":mag::white_check_mark: ID found!", embed=await getIDByDiscord(interaction.user.id), ephemeral=True)
+        await interaction.response.send_message(":mag::white_check_mark: ID found!", embed=await getID("discord_id", interaction.user.id), ephemeral=True)
 
     @command(
             name="help",
