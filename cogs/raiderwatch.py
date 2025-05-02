@@ -5,6 +5,7 @@ from discord import app_commands
 from dotenv import load_dotenv
 from discord import app_commands, Embed, ui
 from datetime import datetime, UTC
+from misc.paginator import Pagination
 import sqlite3
 import requests
 import json
@@ -242,6 +243,30 @@ class Raiderwatch(GroupCog, group_name="raiderwatch", group_description="Securit
         finally:
             c.close()
             conn.close()
+
+     
+    @command(name='list', description='List raiders')
+    async def show(self, interaction: discord.Interaction):
+        try:
+            conn = sqlite3.connect('data.sqlite')
+            c = conn.cursor()
+            c.execute("SELECT roblox_username FROM raiders;")
+            taglist = [row[0] for row in c.fetchall()]
+            L = 10
+            async def get_page(page: int):
+                emb = discord.Embed(title="Raiderwatch raider list", description="")
+                offset = (page-1) * L
+                for tag in taglist[offset:offset+L]:
+                    emb.description += f"`{tag}`\n"
+                emb.set_author(name=f"Requested by {interaction.user}")
+                n = Pagination.compute_total_pages(len(taglist), L)
+                emb.set_footer(text=f"Page {page} from {n}")
+                return emb, n
+            await Pagination(interaction, get_page).navegate()
+        except Exception as e:
+            embed = discord.Embed(title="Unknown error occured!", colour=0xc01c28, description=f"```{e}```")
+            embed.set_footer(text=f"Securitas Managment v.{version}", icon_url="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fb.thumbs.redditmedia.com%2FOkTdkj9krJasoRW41aR-fEaPx9ptf0I1jq9k80b154A.png&f=1&nofb=1&ipt=61f1bf9a0a87897a8374c0762298f934685e0f2d70ff64ac51190c0eb92b5d6e")
+            await interaction.response.send_message(embed=embed)
                
 
 
@@ -266,6 +291,7 @@ class Raiderwatch(GroupCog, group_name="raiderwatch", group_description="Securit
                         value="(Usage of this command is restricted) Delete a raider from the database.",
                         inline=False)
         await interaction.response.send_message(embed=embed)
+
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(Raiderwatch(bot), guild=discord.Object(id=server_id))

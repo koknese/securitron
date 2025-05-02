@@ -5,6 +5,7 @@ from discord import app_commands
 from dotenv import load_dotenv
 from discord import app_commands, Embed, ui
 from datetime import datetime
+from misc.paginator import Pagination
 import sqlite3
 import requests
 import json
@@ -225,8 +226,11 @@ class Identification(GroupCog, group_name="id", group_description="Securitas dig
             description="Find an ID using a Roblox username"
     )
     @app_commands.guilds(discord.Object(id=server_id))
-    @app_commands.checks.has_any_role(role1, role2)
     async def find_by_roblox(self, interaction:discord.Interaction, roblox_username:str):
+        if not interaction.user.guild_permissions.manage_messages:
+            await interaction.response.send_message("You are lacking permissions!", ephemeral=True)
+            return
+
         await interaction.response.send_message(":mag::white_check_mark: ID found!", embed=await getID("roblox_username", roblox_username), ephemeral=True)
 
     @command(
@@ -272,9 +276,11 @@ class Identification(GroupCog, group_name="id", group_description="Securitas dig
             name="view_from_discord_account",
             description="Find an ID using a Discord username"
     )
-    @app_commands.checks.has_any_role(role1, role2)
     @app_commands.guilds(discord.Object(id=server_id))
     async def find_by_discord(self, interaction:discord.Interaction, user: discord.Member):
+        if not interaction.user.guild_permissions.manage_messages:
+            await interaction.response.send_message("You are lacking permissions!", ephemeral=True)
+            return
         await interaction.response.send_message(":mag::white_check_mark: ID found!", embed=await getID("discord_id", user.id), ephemeral=True)
 
     @command(
@@ -344,6 +350,33 @@ class Identification(GroupCog, group_name="id", group_description="Securitas dig
                 embed.set_footer(text=f"Securitas Managment v.{version}", icon_url="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fb.thumbs.redditmedia.com%2FOkTdkj9krJasoRW41aR-fEaPx9ptf0I1jq9k80b154A.png&f=1&nofb=1&ipt=61f1bf9a0a87897a8374c0762298f934685e0f2d70ff64ac51190c0eb92b5d6e")
                 await interaction.response.send_message(embed=embed)
 
+    @command(name='list', description='List IDs')
+    async def show(self, interaction: discord.Interaction):
+        try:
+
+            if not interaction.user.guild_permissions.manage_messages:
+                await interaction.response.send_message("You are lacking permissions!", ephemeral=True)
+                return
+
+            conn = sqlite3.connect('data.sqlite')
+            c = conn.cursor()
+            c.execute("SELECT roblox_username FROM ids;")
+            taglist = [row[0] for row in c.fetchall()]
+            L = 10
+            async def get_page(page: int):
+                emb = discord.Embed(title="ID list (Roblox usernames)", description="")
+                offset = (page-1) * L
+                for tag in taglist[offset:offset+L]:
+                    emb.description += f"`{tag}`\n"
+                emb.set_author(name=f"Requested by {interaction.user}")
+                n = Pagination.compute_total_pages(len(taglist), L)
+                emb.set_footer(text=f"Page {page} from {n}")
+                return emb, n
+            await Pagination(interaction, get_page).navegate()
+        except Exception as e:
+            embed = discord.Embed(title="Unknown error occured!", colour=0xc01c28, description=f"```{e}```")
+            embed.set_footer(text=f"Securitas Managment v.{version}", icon_url="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fb.thumbs.redditmedia.com%2FOkTdkj9krJasoRW41aR-fEaPx9ptf0I1jq9k80b154A.png&f=1&nofb=1&ipt=61f1bf9a0a87897a8374c0762298f934685e0f2d70ff64ac51190c0eb92b5d6e")
+            await interaction.response.send_message(embed=embed)
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(Identification(bot), guild=discord.Object(id=server_id))
