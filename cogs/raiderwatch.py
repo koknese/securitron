@@ -287,6 +287,9 @@ class Raiderwatch(GroupCog, group_name="raiderwatch", group_description="Securit
         embed.add_field(name="/raiderwatch update_last_seen",
                         value="Update the last seen date for a raider.",
                         inline=False)
+        embed.add_field(name="/raiderwatch list",
+                        value="List all raiders.",
+                        inline=False)
         embed.add_field(name="/raiderwatch delete",
                         value="(Usage of this command is restricted) Delete a raider from the database.",
                         inline=False)
