@@ -56,6 +56,7 @@ def getHeadshot(roblox_username):
     if response.status_code == 200:
         userParsedHeadshot = response.json()
         userFinalHeadshot = userParsedHeadshot['data'][0]['imageUrl']
+        print(f"getHeadshot :: Fetched headshot of {roblox_username}")
         return userFinalHeadshot
     else:
         placeholderImg = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.imgflip.com%2Fd0tb7.jpg&f=1&nofb=1&ipt=e1c23bf6c418254a56c19b09cc9ece6238ead393652e54278f0d535f9fb81c56"

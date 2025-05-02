@@ -41,6 +41,18 @@ def getUserId(username):
     print(f"getUserId :: Fetched user ID of username {username} -> {userId}")
     return userId
 
+def getHeadshot(roblox_username):
+    userRawHeadshot = f"https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds={getUserId(roblox_username)}&format=png&size=352x352"
+    response = requests.get(userRawHeadshot)
+    if response.status_code == 200:
+        userParsedHeadshot = response.json()
+        userFinalHeadshot = userParsedHeadshot['data'][0]['imageUrl']
+        print(f"getHeadshot :: Fetched headshot of {roblox_username}")
+        return userFinalHeadshot
+    else:
+        placeholderImg = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.imgflip.com%2Fd0tb7.jpg&f=1&nofb=1&ipt=e1c23bf6c418254a56c19b09cc9ece6238ead393652e54278f0d535f9fb81c56"
+        return placeholderImg
+
 class Baseloading(GroupCog, group_name="baseload", group_description="Securitas baseloading system"):
     def __init__(self, bot):
         self.bot = bot
@@ -96,18 +108,6 @@ class Baseloading(GroupCog, group_name="baseload", group_description="Securitas 
         embed = discord.Embed(colour=0x1c71d8)
         if row:
             roblox_username_db = row[0]
-
-            userRawHeadshot = f"https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds={getUserId(roblox_username_db)}&format=png&size=352x352"
-            response = requests.get(userRawHeadshot)
-            if response.status_code == 200:
-                userParsedHeadshot = response.json()
-                userFinalHeadshot = userParsedHeadshot['data'][0]['imageUrl']
-            else:
-                embed = discord.Embed(title="[Errno 4] Unknown error!", description=response.text, colour=0xa51d2d)
-                embed.set_image(url=f'https://http.cat/{response.status_code}.jpg')
-                embed.set_footer(text=f"Securitas Managment {version}")
-                await interaction.response.send_message(embed=embed)
-
             embed = discord.Embed(title="Request perms here",
                       url="https://canary.discord.com/channels/1339345543448756234/1339345545449439254",
                       colour=0x00b0f4,
@@ -120,7 +120,7 @@ class Baseloading(GroupCog, group_name="baseload", group_description="Securitas 
                             value=f"https://roblox.com/users/{getUserId(roblox_username_db)}/profile",
                             inline=False)
 
-            embed.set_thumbnail(url=userFinalHeadshot)
+            embed.set_thumbnail(url=getHeadshot(roblox_username_db))
             channel = interaction.client.get_channel(baseloadChannel)
 
             await channel.send("@here", embed=embed)
