@@ -29,6 +29,18 @@ def determineRank(rank_db):
     else:
         return "NOT SET"
 
+def getHeadshot(roblox_username):
+    userRawHeadshot = f"https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds={getUserId(roblox_username)}&format=png&size=352x352"
+    response = requests.get(userRawHeadshot)
+    if response.status_code == 200:
+        userParsedHeadshot = response.json()
+        userFinalHeadshot = userParsedHeadshot['data'][0]['imageUrl']
+        print(f"getHeadshot :: Fetched headshot of {roblox_username}")
+        return userFinalHeadshot
+    else:
+        placeholderImg = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.imgflip.com%2Fd0tb7.jpg&f=1&nofb=1&ipt=e1c23bf6c418254a56c19b09cc9ece6238ead393652e54278f0d535f9fb81c56"
+        return placeholderImg
+
 async def getID(gettingMethod, discordID):
         try:
             conn = sqlite3.connect('data.sqlite')
@@ -40,16 +52,6 @@ async def getID(gettingMethod, discordID):
                 discord_id_db = row[1]
                 securitas_id_db = row[2]
                 rank_db = row[3]
-                userRawHeadshot = f"https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds={getUserId(roblox_username_db)}&format=png&size=352x352"
-                response = requests.get(userRawHeadshot)
-                if response.status_code == 200:
-                    userParsedHeadshot = response.json()
-                    userFinalHeadshot = userParsedHeadshot['data'][0]['imageUrl']
-                else:
-                    embed = discord.Embed(title="[Errno 4] Unknown error!", description=response.text, colour=0xa51d2d)
-                    embed.set_image(url=f'https://http.cat/{response.status_code}.jpg')
-                    embed.set_footer(text=f"Securitas Managment {version}")
-                    return embed
                 embed = discord.Embed(colour=0xf66151)
                 embed.set_author(name="SECURITAS DIGITAL ID")
 
@@ -67,7 +69,7 @@ async def getID(gettingMethod, discordID):
                                 inline=False)
                 
                 embed.set_footer(text=f"Securitas Managment v.{version}", icon_url="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fb.thumbs.redditmedia.com%2FOkTdkj9krJasoRW41aR-fEaPx9ptf0I1jq9k80b154A.png&f=1&nofb=1&ipt=61f1bf9a0a87897a8374c0762298f934685e0f2d70ff64ac51190c0eb92b5d6e")
-                embed.set_thumbnail(url=userFinalHeadshot)
+                embed.set_thumbnail(url=getHeadshot(roblox_username_db))
                 c.close()
                 conn.close()
                 return embed
