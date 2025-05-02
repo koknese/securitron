@@ -108,7 +108,7 @@ class Quickcheck(commands.Cog):
                 await interaction.followup.send(embed=embed)
         except Exception as e: embed = discord.Embed(title="Unknown error occured!", colour=0xc01c28, description=f"```{e}```")
                 embed.set_footer(text=f"Securitas Managment v.{version}", icon_url="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fb.thumbs.redditmedia.com%2FOkTdkj9krJasoRW41aR-fEaPx9ptf0I1jq9k80b154A.png&f=1&nofb=1&ipt=61f1bf9a0a87897a8374c0762298f934685e0f2d70ff64ac51190c0eb92b5d6e")
-                await interaction.response.send_message(embed=embed)
+                await interaction.followup.send(embed=embed)
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(Quickcheck(bot), guild=discord.Object(id=server_id))
