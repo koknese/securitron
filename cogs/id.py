@@ -311,6 +311,9 @@ class Identification(GroupCog, group_name="id", group_description="Securitas dig
         embed.add_field(name="/id view_from_discord_account",
                         value="(Usage of this command is restricted) View someone's id from their Discord account.",
                         inline=False)
+        embed.add_field(name="/id list",
+                        value="(Usage of this command is restricted) List all registered ids."
+                        inline=False)
         embed.add_field(name="/id delete",
                         value="(Usage of this command is restricted) Delete someone's id.",
                         inline=False)
