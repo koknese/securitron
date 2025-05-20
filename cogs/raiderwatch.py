@@ -117,7 +117,7 @@ class Raiderwatch(GroupCog, group_name="raiderwatch", group_description="Securit
         c.close()
         conn.close()
 
-        embed = discord.Embed(title=f"User registered to Raiderwatch Registry by {interaction.user}!", colour=0x2ec27e)
+        embed = discord.Embed(title=f"User {roblox_username} registered to Raiderwatch Registry by {interaction.user}!", colour=0x2ec27e)
         embed.set_footer(text=f"Securitas Managment v.{version}")
         await interaction.response.send_message(embed=embed)
 
