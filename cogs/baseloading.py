@@ -64,7 +64,7 @@ class Baseloading(GroupCog, group_name="baseload", group_description="Securitas 
     )
     @app_commands.guilds(discord.Object(id=server_id))
     @app_commands.describe(poll_end_time="Time in which the poll ends (in minutes)", reactions_required="How many reaction to the message are required for the poll to succeed")
-    @app_commands.checks.has_role(1358963787407032321)
+    @app_commands.checks.has_any_role(1358963787407032321, 1339345543486509103)
     async def poll(self, interaction: discord.Interaction, details: str, base: str, poll_end_time: int, reactions_required: str):
         unix_timestamp = int(time.time())
         timeInSec = poll_end_time * 60
@@ -99,7 +99,7 @@ class Baseloading(GroupCog, group_name="baseload", group_description="Securitas 
         description="Start a baseload"
     )
     @app_commands.guilds(discord.Object(id=server_id))
-    @app_commands.checks.has_role(1358963787407032321)
+    @app_commands.checks.has_any_role(1358963787407032321, 1339345543486509103)
     async def start(self, interaction: discord.Interaction):
         conn = sqlite3.connect('data.sqlite')
         c = conn.cursor()
